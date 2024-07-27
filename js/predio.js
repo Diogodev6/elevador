@@ -62,15 +62,30 @@
         return +elevador.style.bottom.replace('px', '')
     }
 
+    function atualizarMostrador(texto) {
+        const mostrador = document.querySelector('.mostrador')
+        mostrador.innerHTML = texto
+    }
+
     function moverElevadorPara(andar) {
         const numero = andar === 't' ? 0 : +andar 
         const elevador = document.querySelector('.elevador')
         
+        elevador.style.bottom = (numero * obterTamanhoElevador())
 
-        elevador.style.bottom = obterPosicaoAtual() + (numero * obterTamanhoElevador())
+        atualizarMostrador(andar === 't' ? 'Térreo': `${andar} Andar`)
+    }
+
+    function aplicarControlesDoElevador() {
+        const botoes = document.querySelectorAll('[destino]')
+        botoes.forEach(botao => {
+            const destino = botao.getAttribute('destino')
+            botao.onclick = () => moverElevadorPara(destino)
+        })
     }
 
     criarElevador()
-    moverElevadorPara('t')
+    aplicarControlesDoElevador()
+    
 
 })()
