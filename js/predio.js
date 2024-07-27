@@ -71,9 +71,22 @@
         const numero = andar === 't' ? 0 : +andar 
         const elevador = document.querySelector('.elevador')
         
-        elevador.style.bottom = (numero * obterTamanhoElevador())
+        const posicaoInicial = obterPosicaoAtual()
+        const posicaoFinal = (numero * obterTamanhoElevador())
+        const subindo = posicaoFinal > posicaoInicial
 
-        atualizarMostrador(andar === 't' ? 'Térreo': `${andar} Andar`)
+        atualizarMostrador(subindo ? 'Subindo' : 'Descendo')
+
+        let temporizador = setInterval(() => {
+            const novaPosicao = obterPosicaoAtual() + (subindo ? 10 : -10)
+            const terminou = subindo ? novaPosicao >= posicaoFinal : novaPosicao <= posicaoFinal
+            elevador.style.bottom = terminou ? posicaoFinal : novaPosicao
+            if(terminou){
+                clearInterval(temporizador)
+                atualizarMostrador(andar === 't' ? 'Térreo': `${andar} Andar`)
+            }
+        }, 30)
+
     }
 
     function aplicarControlesDoElevador() {
