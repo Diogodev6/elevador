@@ -42,6 +42,22 @@
     criarPavimentos()
 
     // -------------------- Elevador
+    function iniciarMovimentacao() {
+        const elevador = document.querySelector('.elevador')
+        elevador.setAttribute('em-movimentacao', '')
+    }
+
+    function finalizarMovimentacao() {
+        const elevador = document.querySelector('.elevador')
+        elevador.removeAttribute('em-movimentacao')
+    }
+
+    function emMovimentacao() {
+        const elevador = document.querySelector('.elevador')
+        return elevador.hasAttribute('em-movimentacao')
+    }
+
+
     function obterTamanhoElevador() {
         const terreo = document.querySelector('[andar="t"]')
         return terreo.offsetHeight
@@ -67,7 +83,22 @@
         mostrador.innerHTML = texto
     }
 
+    function iniciarComando(comando) {
+        const botao = document.querySelector(`[comando="${comando}"]`)
+        botao.classList.add('destaque')
+    }
+
+    function finalizarComando(comando) {
+        const botao = document.querySelector(`[comando="${comando}"]`)
+        botao.classList.remove('destaque')
+    }
+
     function moverElevadorPara(andar) {
+        if(emMovimentacao()) return
+
+        iniciarMovimentacao()
+        iniciarComando(andar)
+
         const numero = andar === 't' ? 0 : +andar 
         const elevador = document.querySelector('.elevador')
         
@@ -84,16 +115,18 @@
             if(terminou){
                 clearInterval(temporizador)
                 atualizarMostrador(andar === 't' ? 'Térreo': `${andar} Andar`)
+                finalizarMovimentacao()
+                finalizarComando(andar)
             }
         }, 30)
 
     }
 
     function aplicarControlesDoElevador() {
-        const botoes = document.querySelectorAll('[destino]')
+        const botoes = document.querySelectorAll('[comando]')
         botoes.forEach(botao => {
-            const destino = botao.getAttribute('destino')
-            botao.onclick = () => moverElevadorPara(destino)
+            const comando = botao.getAttribute('comando')
+            botao.onclick = () => moverElevadorPara(comando)
         })
     }
 
